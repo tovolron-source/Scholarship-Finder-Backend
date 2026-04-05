@@ -25,6 +25,7 @@ async function initializeTables() {
       CREATE TABLE IF NOT EXISTS user (
         id INT AUTO_INCREMENT PRIMARY KEY,
         Name VARCHAR(255) NOT NULL,
+        FullName VARCHAR(255),
         Email VARCHAR(255) UNIQUE NOT NULL,
         Password VARCHAR(255) NOT NULL,
         RegistrationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -32,6 +33,29 @@ async function initializeTables() {
     `);
 
     console.log('✅ Users table ready');
+
+    // Create student_profile table if it doesn't exist
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS student_profile (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        userId INT NOT NULL UNIQUE,
+        gender VARCHAR(50),
+        address VARCHAR(500),
+        school VARCHAR(255),
+        course VARCHAR(255),
+        yearLevel VARCHAR(50),
+        gpa DECIMAL(3,2),
+        financialStatus VARCHAR(50),
+        contactNumber VARCHAR(20),
+        profilePhoto VARCHAR(500),
+        profileCompletion INT DEFAULT 20,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE
+      )
+    `);
+
+    console.log('✅ Student Profile table ready');
     connection.release();
   } catch (error) {
     console.error('❌ Error initializing tables:', error);

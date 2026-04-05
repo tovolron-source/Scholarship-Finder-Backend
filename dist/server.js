@@ -6,16 +6,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const path_1 = __importDefault(require("path"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const database_1 = __importDefault(require("./config/database"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 // Middleware
 app.use((0, cors_1.default)({
-    origin: 'http://localhost:5173', // Your React app URL
+    origin: 'http://localhost:5173',
     credentials: true
 }));
 app.use(express_1.default.json());
+// Serve static files from uploads directory
+app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 // Routes
 app.use('/api/auth', auth_1.default);
 // Health check
@@ -52,9 +55,9 @@ app.use((err, req, res, next) => {
 });
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📡 CORS enabled for http://localhost:5173`);
-    console.log(`📊 Database: ${process.env.DB_NAME}`);
-    console.log(`🔌 Database Host: ${process.env.DB_HOST}`);
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`CORS enabled for http://localhost:5173`);
+    console.log(`Database: ${process.env.DB_NAME}`);
+    console.log(`Database Host: ${process.env.DB_HOST}`);
 });
 //# sourceMappingURL=server.js.map

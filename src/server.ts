@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import authRoutes from './routes/auth';
 import pool from './config/database';
 
@@ -10,10 +11,13 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // Your React app URL
+  origin: 'http://localhost:5173',
   credentials: true
 }));
 app.use(express.json());
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -55,8 +59,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📡 CORS enabled for http://localhost:5173`);
-  console.log(`📊 Database: ${process.env.DB_NAME}`);
-  console.log(`🔌 Database Host: ${process.env.DB_HOST}`);
+  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`CORS enabled for http://localhost:5173`);
+  console.log(`Database: ${process.env.DB_NAME}`);
+  console.log(`Database Host: ${process.env.DB_HOST}`);
 });
